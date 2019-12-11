@@ -165,7 +165,6 @@ class device_manager(tk.Tk):
         mac_address = self.device_mac_address_Entry.get()
         user = self.device_holder_name_Entry.get()
         time = datetime.datetime.now().strftime("%d-%B-%y %H:%M:%S")
-
         if device == "" or mac_address == "" or user == "":
             self.pop_up_error_message("empty_field_error")
         elif len(device) < 5 or len(mac_address) < 5 or len(user) < 5:
@@ -173,13 +172,42 @@ class device_manager(tk.Tk):
         elif self.validate_mac(mac_address) == 0:
             self.pop_up_error_message("mac_error")
         else:
-            pass
+            insert_query = "INSERT INTO devices (device_name,mac_address,device_holder,timestamp) VALUES (?,?,?,?)"
+            insert_values = (device, mac_address, user, time)
+            device_manager.run_query(insert_query, insert_values)
+            self.device_holder_name_Entry.delete(0,tk.END)
+            self.device_mac_address_Entry.delete(0,tk.END)
+            self.device_name_Entry.delete(0,tk.END)
+            tkinter.messagebox.showinfo("Success", "Device Added Successfully")
+    
+    @staticmethod
+    def run_query(sql, input_value=False, return_value=False):
+        connection = sqlite3.connect(DB_FILE_PATH)
+        cursor = connection.cursor()
+        if input_value:
+            cursor.execute(sql,input_value)
+        else:
+            cursor.execute(sql)
+        if return_value:
+            return cursor.fetchall()
+        else:
+            connection.commit()
+        cursor.close()
 
-    # @staticmethod
-    # def first_time_db():
+    @staticmethod
+    def first_time_db():
+        create_table_query = "CREATE TABLE devices ( device_name VARCHAR(20), mac_address VARCHAR(20) UNIQUE, device_holder VARCHAR(30),\
+         timestamp VARCHAR(20) )"
+        device_manager.run_query(create_table_query)
+
         
 
 
 if __name__ == '__main__':
+    if not os.path.isfile(DB_FILE_PATH):    
+        device_manager.first_time_db()
     mainApp = device_manager()
+    mainApp.resizable(width=False, height=False)
     mainApp.mainloop()
+
+    device_manager.listallvalues()
