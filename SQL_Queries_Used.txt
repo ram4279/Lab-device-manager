@@ -1,0 +1,33 @@
+TABLE:
+=======
+CREATE TABLE devices ( device_name VARCHAR(20), mac_address VARCHAR(20) UNIQUE, device_holder VARCHAR(30), timestamp VARCHAR(20) )
+
+INSERTING VALUES:
+==================
+INSERT INTO devices (device_name,mac_address,device_holder,timestamp) VALUES (
+  'MacbookAir',
+  '88:41:98:AA:92:A2',
+  'BOB',
+  '12/12/2019 21:38'
+); 
+
+Update USER:
+============
+"UPDATE devices SET device_holder = ? where device_name = ?"
+
+
+POPULATE DEVICES:
+==================
+"SELECT device_name FROM devices"
+
+
+SEARCH USER:
+=============
+"SELECT * FROM devices where device_name=?"
+
+
+Device List:
+===============
+MacbookAir10
+30:A2:C2:B2:11:45
+Sairam
